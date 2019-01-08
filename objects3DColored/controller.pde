@@ -140,7 +140,6 @@ class Controle {
 
     textSize(15);
     fill(0);
-    
     text("Coordenadas (" + controle.getX() + ", " + controle.getY() + ", " + controle.getZ()+")", (width/2)-60, 37*1.5);
     if(pintura) text("Processing", width/2, (37*1.5)*1.3);
     else text("ScanLine", width/2, (37*1.5)*1.3);

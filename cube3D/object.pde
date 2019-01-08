@@ -1,54 +1,91 @@
-class Object3D {
-  String nome;  
+final int axisLinhas = 9;
+final int axisVertices = 12; 
 
+class Cubo3D {
   int projecao;
   float xMedio, yMedio, zMedio;
+  
+  int pontos = 8+axisVertices, linhas = 12+axisLinhas;
 
-  int pontos;
-  float[][] mPontos;  // Matriz de pontos
-  float[][] auxPontos;  // Matriz auxiliar de pontos (onde todos os calculos serão feitos)
+  float[][] mPontos;
+  float[][] auxPontos;
 
-  int linhas;
-  int[][] mLinhas;  // Matriz de linhas
-  color corLinha;  // Cor da linha: pode ser preto se o objeto não estiver selecionado e vermelho caso contrário
+  int[][] mLinhas;
+  color corLinha;
+  color[] axisColors;
 
-  int faces;
-  IntList[] mFaces;  // Matriz de faces
-  float[][] corFaces;  // Cor das faces
+  float[] rotacao;
+  float[] escala;
+  float[] translacao;
+  float[] translacao2;
 
-  float[] rotacao;  // Vetor de rotacao
-  float[] escala;  // Vetor de escala
-  float[] translacao;  // Vetor de translacao em relação com centro do objeto em (0, 0, 0) 
-  float[] translacao2;  // Vetor de translacao em relação ao mundo
-
-
-
-
-  // Inicializacao do objeto
-  Object3D(String nome, float[][] mPontos, int[][] mLinhas, IntList[] mFaces, float[][] corFaces, int nPontos, int nLinhas, int nFaces) {    
-
+  Cubo3D() {
     projecao = 0;
 
-    this.nome = nome;
-
-    this.pontos = nPontos;
-    this.mPontos = mPontos;
     this.auxPontos = new float[pontos][3];
 
-    this.linhas = nLinhas;
+    float[][] mPontos = {
+      {-10, -10, 10}, 
+      {-10, -10, -10}, 
+      {10, -10, -10}, 
+      {10, -10, 10}, 
+      {10, 10, 10}, 
+      {-10, 10, 10}, 
+      {-10, 10, -10}, 
+      {10, 10, -10},
+
+      {15, 0, 0},
+      {-15, 0, 0},
+      {0, 15, 0},
+      {0, -15, 0},
+      {0, 0, 15},
+      {0, 0, -15},
+
+      {12.8, 2, 0},
+      {2, 12.8, 0},
+      {2, 0, 12.8},
+      {12.8, -2, 0},      
+      {-2, 12.8, 0},   
+      {-2, 0, 12.8}
+    };
+    this.mPontos = mPontos;
+
+    int[][] mLinhas = {
+      {0, 1}, 
+      {1, 2}, 
+      {2, 3}, 
+      {3, 0}, 
+      {4, 5}, 
+      {5, 6}, 
+      {6, 7}, 
+      {7, 4}, 
+      {0, 5}, 
+      {1, 6}, 
+      {2, 7}, 
+      {3, 4},
+      {8, 9},
+      {10, 11},
+      {12, 13},
+      {8, 14},
+      {10, 15},
+      {12, 16},
+      {8, 17},
+      {10, 18},
+      {12, 19}
+    };
     this.mLinhas = mLinhas;
-    this.corLinha = color(0, 0, 0);
 
-    this.faces = nFaces;
-    this.mFaces = mFaces;
-    this.corFaces = corFaces;
+    this.axisColors = new color[3];
+    this.axisColors[0] = color(255, 0, 0);
+    this.axisColors[1] = color(0, 255, 0);
+    this.axisColors[2] = color(0, 0, 255);
 
-    float[] rotacao = {0, 0, 0};
+    float[] rotacao = {0.001, 0.001, 0.001};
     this.rotacao = rotacao;
 
-    float[] escala = {0, 0, 0};
+    float[] escala = {10.0, 10.0, 10.0};
     this.escala = escala;
-
+    
     float[] translacao = {0, 0, 0};
     this.translacao = translacao;
 
@@ -56,150 +93,81 @@ class Object3D {
     this.translacao2 = translacao2;
   }
 
-
-
-
-  // Retornar o nome do objeto
-  String getNome() {
-    return this.nome;
-  }
-
-
-
-
-  // Mudar de projeção
   void proximaProjecao() {
-    this.projecao++;
-    if (projecao > 4) this.projecao = 0;
+    projecao++;
+    if (projecao > 4) projecao = 0;
   }
 
-
-
-
-  // Retornar qual a atual projeção
   int getProjecao() {
     return projecao;
   }
 
-
-
-
   void calcX() {
     this.xMedio = 0;
-    for (int i = 0; i < faces; i++) {  
-      float aux = 0;
-      for (int j = 0; j < mFaces[i].size(); j++) {
-        aux += this.auxPontos[mFaces[i].get(j)][X];
-      }
-      this.xMedio = aux/mFaces[i].size();
+    for (int i = 0; i < pontos; i++) {  
+      xMedio += this.auxPontos[i][X];
     }
-    this.xMedio /= faces;
+    this.xMedio /= pontos;
   }
-
-
-
 
   int getX() {
     this.calcX();
     return int(xMedio);
   }  
 
-
-
-
-
   void calcY() {
     this.yMedio = 0;
-    for (int i = 0; i < faces; i++) {  
-      float aux = 0;
-      for (int j = 0; j < mFaces[i].size(); j++) {
-        aux += this.auxPontos[mFaces[i].get(j)][Y];
-      }
-      this.yMedio = aux/mFaces[i].size();
+    for (int i = 0; i < pontos; i++) {  
+      yMedio += this.auxPontos[i][Y];
     }
-    this.yMedio /= faces;
+    this.yMedio /= pontos;
   }
-
-
-
 
   int getY() {
     this.calcY();
     return int(yMedio);
   }  
 
-
-
-
-
   void calcZ() {
     this.zMedio = 0;
-    for (int i = 0; i < faces; i++) {  
-      float aux = 0;
-      for (int j = 0; j < mFaces[i].size(); j++) {
-        aux += this.auxPontos[ mFaces[i].get(j) ] [Z];
-      }
-      this.zMedio = aux/mFaces[i].size();
+    for (int i = 0; i < pontos; i++) {  
+      zMedio += this.auxPontos[i][Z];
     }
-    this.zMedio /= faces;
+    this.zMedio /= pontos;
   }
-
-
-
 
   int getZ() {
     this.calcZ();
     return int(zMedio);
-  }  
+  }
 
-
-
-
-  // Incrementar/Decrementar rotacao
   void rotacao(float x, float y, float z) {
-    this.rotacao[X] += x;
-    this.rotacao[Y] += y;
-    this.rotacao[Z] += z;
+    rotacao[X] += x;
+    rotacao[Y] += y;
+    rotacao[Z] += z;
   }
 
-
-
-
-  // Incrementar/Decrementar escala
   void escala(float x, float y, float z) {
-    this.escala[X] += x;
-    this.escala[Y] += y;
-    this.escala[Z] += z;
+    escala[X] += x;
+    escala[Y] += y;
+    escala[Z] += z;
   }
 
-
-
-
-  // Incrementar/Decrementar translacao
   void translacao(float x, float y, float z) {
-    this.translacao[X] += x;
-    this.translacao[Y] += y;
-    this.translacao[Z] += z;
+    translacao[X] += x;
+    translacao[Y] += y;
+    translacao[Z] += z;
   } 
-
-
-
 
   // Mudar cor do objeto selecionado para vermelho
   public void selecionado() {
     this.corLinha = color(255, 0, 0);
   }
 
-
-
-
   // Mudar cor do objeto não selecionado para preto
   public void naoSelecionado() {
     this.corLinha = color(0, 0, 0);
   }
-
-
-
 
   public void calPosicao() {
     // Rotacao
@@ -274,7 +242,7 @@ class Object3D {
       }
       break;
 
-    case 4: // Dois pontos de fuga em;+ X e em Z
+    case 4: // Dois pontos de fuga em X e em Z
       for (int i = 0; i < pontos; i++) {
         float x = auxPontos[i][X], y = auxPontos[i][Y], z = auxPontos[i][Z];
         if (( 1 - (z/100) - (z/100) ) == 0) {
@@ -288,7 +256,6 @@ class Object3D {
       break;
     }
 
-
     // Translacao em relação ao mundo
     for (int i = 0; i < pontos; i++) {
       for (int j = 0; j < 2; j++) {
@@ -297,58 +264,18 @@ class Object3D {
     }
   }
 
-
-
-
   public void desenhaPoligono() {
     // Desenha linhas
-    for (int i = 0; i < linhas; i++) {
+    for (int i = 0; i < linhas - axisLinhas; i++) {
       int l1 = mLinhas[i][X], l2 = mLinhas[i][Y];
       linhaDDA(int(auxPontos[l1][X]), int(auxPontos[l1][Y]), int(auxPontos[l2][X]), int(auxPontos[l2][Y]), this.corLinha);
     }
 
-    // Desenha faces
-    float[][] P = new float[3][3];
-
-    
-    for (int i = 0; i < faces; i++) {  
-      for (int j = 0; j < 3; j++) {
-        P[j][X] = auxPontos[mFaces[i].get(j)][X];
-        P[j][Y] = auxPontos[mFaces[i].get(j)][Y];
-        P[j][Z] = auxPontos[mFaces[i].get(j)][Z];
-      }
-
-      float nx, ny, nz;
-      nx = (P[2][Y] - P[1][Y]) * (P[0][Z] - P[1][Z]) - (P[0][Y] - P[1][Y]) * (P[2][Z] - P[1][Z]);
-      ny = (P[2][Z] - P[1][Z]) * (P[0][X] - P[1][X]) - (P[0][Z] - P[1][Z]) * (P[2][X] - P[1][X]);
-      nz = (P[2][X] - P[1][X]) * (P[0][Y] - P[1][Y]) - (P[0][X] - P[1][X]) * (P[2][Y] - P[1][Y]);
-
-      float ni = nx*(PO[projecao][X] - P[1][X]) + ny*(PO[projecao][Y] - P[1][Y]) + nz*(PO[projecao][Z] - P[1][Z]);
-
-      if (ni > 0) {
-        color cor = color(int(corFaces[i][0]*255), int(corFaces[i][1]*255), int(corFaces[i][2]*255));
-        fill(cor);
-
-        if (pintura) {
-          beginShape();      
-          for (int j = 0; j < mFaces[i].size(); j++) {
-            vertex(auxPontos[ mFaces[i].get(j) ] [X], auxPontos[ mFaces[i].get(j) ] [Y]);
-          }
-          endShape(CLOSE);
-        }
-        else {
-          int[][] auxlinhas = new int[mFaces[i].size()][2];
-          for (int j = 0; j < mFaces[i].size(); j++) {
-            auxlinhas[j][0] = mFaces[i].get(j); 
-            if(j+1 == mFaces[i].size()) auxlinhas[j][1] = mFaces[i].get(0);
-            else auxlinhas[j][1] = mFaces[i].get(j+1);
-          }
-          
-          pintaPoligono(mFaces[i].size(), auxPontos, auxlinhas, cor);
-        }
-      }
+    for (int i = linhas-axisLinhas; i < linhas; i++) {
+      int l1 = mLinhas[i][X], l2 = mLinhas[i][Y];
+      color cor = axisColors[abs(linhas - axisLinhas - i)%3];
+      linhaDDA(int(auxPontos[l1][X]), int(auxPontos[l1][Y]), int(auxPontos[l2][X]), int(auxPontos[l2][Y]), cor);
     }
   }
-  
-  
+
 } 
