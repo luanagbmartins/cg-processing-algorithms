@@ -1,2 +1,2 @@
 # cg-processing-algorithms
-Repositório de resoluções de problemas em computação gráfica usando apenas a função pronta point() na plataforma Processing.
+Computer graphics resolutions using only the point() function on the Processing platform.  
